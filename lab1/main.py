@@ -97,8 +97,10 @@ def q(nums, frst, lst, reverse = False):
       out.write(line +'\n')
     out.write("\33[31m{}\033[0m".format(f"\nquick reverse - {t2}\n\n"))
 
+print("Please, enter input filepath")
+filepath = input()
 A = []
-with open("input", "r") as inp:
+with open(filepath, "r") as inp:
 	for line in inp:
 		A.append(line[:-1])
 B = [i for i in A]
