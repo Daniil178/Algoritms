@@ -73,13 +73,14 @@ def m(nums, reverse = False):
   start2 = time.time()
   merge_sort(nums1, True)
   t2 = time.time() - start2
-  with open(".buf", "w") as out:
+  with open("merge", "w") as out:
     for line in nums:
       out.write(line +'\n')
-    out.write("\33[36m{}\033[0m".format(f"\nmerge - {t1}\n\n"))
+  print(f"merge - {t1}")
+  with open("merge_rev", "w") as out:  
     for line in nums1:
       out.write(line +'\n')
-    out.write("\33[36m{}\033[0m".format(f"\nmerge reverse - {t2}\n\n"))
+  print(f"merge reverse - {t2}")
 
 def q(nums, frst, lst, reverse = False):
   nums1 = nums.copy()
@@ -89,13 +90,14 @@ def q(nums, frst, lst, reverse = False):
   start2 = time.time()
   quicksort(nums1, frst, lst, True)
   t2 = time.time() - start2
-  with open("output", "w") as out:
+  with open("quick", "w") as out:
     for line in nums:
       out.write(line + '\n')
-    out.write("\33[31m{}\033[0m".format(f"\nquick - {t1}\n\n"))
+  print(f"quick - {t1}")
+  with open("quick_rev", "w") as out:  
     for line in nums1:
       out.write(line +'\n')
-    out.write("\33[31m{}\033[0m".format(f"\nquick reverse - {t2}\n\n"))
+  print(f"quick reverse - {t2}")
 
 print("Please, enter input filepath")
 filepath = input()
@@ -114,9 +116,4 @@ if __name__ == "__main__":
    
    process1.join()  
    process2.join()
-
-with open(".buf", "r") as buf:
-	with open("output", "a") as out:
-		for line in buf:
-			out.write(line)
 
