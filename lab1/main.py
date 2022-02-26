@@ -9,8 +9,8 @@ def quicksort(nums, frst, lst, reverse = False):
    pivot = nums[random.randint(frst, lst)]
    if reverse:
     while i <= j:
-        while int(nums[i][:8], 16) > int(pivot[:8], 16): i += 1
-        while int(nums[j][:8], 16) < int(pivot[:8], 16): j -= 1
+        while int(nums[i][:16], 16) > int(pivot[:16], 16): i += 1
+        while int(nums[j][:16], 16) < int(pivot[:16], 16): j -= 1
         if i <= j:
             nums[i], nums[j] = nums[j], nums[i]
             i, j = i + 1, j - 1
@@ -18,8 +18,8 @@ def quicksort(nums, frst, lst, reverse = False):
     quicksort(nums, i, lst, True)
    else:
      while i <= j:
-        while int(nums[i][:8], 16) < int(pivot[:8], 16): i += 1
-        while int(nums[j][:8], 16) > int(pivot[:8], 16): j -= 1
+        while int(nums[i][:16], 16) < int(pivot[:16], 16): i += 1
+        while int(nums[j][:16], 16) > int(pivot[:16], 16): j -= 1
         if i <= j:
             nums[i], nums[j] = nums[j], nums[i]
             i, j = i + 1, j - 1
@@ -40,7 +40,7 @@ def merge_sort(nums, reverse = False):
         i = j = k = 0
         if reverse:
           while i < len(left) and j < len(right): 
-              if int(left[i][:8], 16) > int(right[j][:8], 16): 
+              if int(left[i][:16], 16) > int(right[j][:16], 16): 
                   nums[k] = left[i] 
                   i+=1
               else: 
@@ -49,7 +49,7 @@ def merge_sort(nums, reverse = False):
               k+=1
         else:
           while i < len(left) and j < len(right):
-              if  int(left[i][:8], 16) < int(right[j][:8], 16): 
+              if  int(left[i][:16], 16) < int(right[j][:16], 16): 
                   nums[k] = left[i] 
                   i+=1
               else: 
