@@ -1,4 +1,5 @@
 import pickle
+import sys
 
 def check_euler(graph):
   for i in list(dict.keys(graph)):
@@ -60,20 +61,27 @@ def find_ham_path(graph):
         path = []
     return path
 
-with open("out_graph", "rb") as inp:
-  graph = pickle.load(inp)
-
-path = find_euler_path(graph)
-
-if len(path) != 0:
-  print("Graph is euler")
-  print(*path)
-else:
-    print("Graph hasn`t euler cycle")
-
-path = find_ham_path(graph)
-if path == []:
-    print("Graph isn`t Hamilton`s")
-else:
-    print("Graph is Hamilton`s")
-    print(*path)
+if __name__ == "__main__":
+	filename = "out_graph" 
+	if len(sys.argv) > 1:
+		filename = sys.argv[1]
+	
+	try:
+		with open(filename, "rb") as inp:
+  			graph = pickle.load(inp)
+		path = find_euler_path(graph)
+		
+		if len(path) != 0:
+  			print("Graph is euler")
+  			print(*path)
+		else:
+    			print("Graph hasn`t euler cycle")
+		
+		path = find_ham_path(graph)
+		if path == []:
+    			print("Graph isn`t Hamilton`s")
+		else:
+    			print("Graph is Hamilton`s")
+    			print(*path)
+	except FileNotFoundError:
+		print("Error, this file don`t exist")
