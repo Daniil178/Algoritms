@@ -69,19 +69,18 @@ if __name__ == "__main__":
 	try:
 		with open(filename, "rb") as inp:
   			graph = pickle.load(inp)
-		path = find_euler_path(graph)
+		path = find_ham_path(graph)
+		if path == []:
+                	print("Graph isn`t Hamilton`s")
+		else:
+			print("Graph is Hamilton`s")
+			print(*path)
 		
+		path = find_euler_path(graph)
 		if len(path) != 0:
   			print("Graph is euler")
   			print(*path)
 		else:
     			print("Graph hasn`t euler cycle")
-		
-		path = find_ham_path(graph)
-		if path == []:
-    			print("Graph isn`t Hamilton`s")
-		else:
-    			print("Graph is Hamilton`s")
-    			print(*path)
 	except FileNotFoundError:
 		print("Error, this file don`t exist")

@@ -19,6 +19,7 @@ while k < edge:
       graph[v1].append(v2), graph[v2].append(v1)
       k += 1 
 
+
 with open("out_graph", "wb") as out:
   pickle.dump(graph, out)
 
