@@ -47,19 +47,20 @@ def parse_args(text_file, file_name):
     args = vars(parser.parse_args())
 
     if(args['text']):
-        text_file = args['text']
+        text_file[0] = args['text']
 
     if(args['pat']):
-        file_name = args['pat']
+        file_name[0] = args['pat']
+    return args['text'], args['pat']
 
 
 
 def main():
-    file_name = './patterns.txt'
-    text_file = './text.txt'
+    file_name = "./patterns.txt"
+    text_file = "./text.txt"
     dict_hashes = {}
     #dict hash: {adress: (str, hash)}
-    parse_args(text_file, file_name)
+    text_file, file_name = parse_args([text_file], [file_name])
     patt_len = create_patt_hashes(file_name, dict_hashes)
     blum_file = create_blum(dict_hashes)
     
