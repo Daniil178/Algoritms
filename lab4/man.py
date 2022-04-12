@@ -59,7 +59,7 @@ def main():
     text_file = './text.txt'
     dict_hashes = {}
     #dict hash: {adress: (str, hash)}
-    # parse_args(text_file, file_name)
+    parse_args(text_file, file_name)
     patt_len = create_patt_hashes(file_name, dict_hashes)
     blum_file = create_blum(dict_hashes)
     
@@ -67,7 +67,7 @@ def main():
         text = file.read()
 
     with open(blum_file, "rb") as file:
-        #prc = []
+        prc = []
         processing(0, len(text), patt_len, text, file, dict_hashes)
 
         for j in range(0, PROCESS):
