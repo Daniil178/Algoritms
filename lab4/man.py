@@ -14,14 +14,17 @@ def processing(first, len_txt, patt_len, text, blum_file, dict_hashes):
 
 def create_blum(dict_hashes):
     filename = "blum.bin"
-    byte = [0] * 2**11
+    byte = [0] * 2**14
+    bt = [0] * 2**11
     for adr in dict_hashes:
-        # gen_hsh = 0
-        # for patt in dict_hashes[adr]:
-        #     gen_hsh |= patt[1]
-        byte[adr] = 1#gen_hsh
+        byte[adr] = 1
+    for i in range(2**11):
+        b = 0
+        for j in range(8):
+            b += byte[i * 8 + j] * 2**(7 - j)
+        bt[i] = b
     with open(filename, "wb") as f:
-        f.write(bytes(byte))
+        f.write(bytes(bt))
     return filename
 
 def create_patt_hashes(filename, dict_hashes):

@@ -1,10 +1,11 @@
 PROCESS = 4
 
 def equal(hsh, adr, file):
-    file.seek(adr)
+    file.seek(adr//8)
     pat = file.read(1)
-    pat_hsh = int.from_bytes(pat, "big")
-    if pat_hsh == 1:
+    pat_hsh = bin(int.from_bytes(pat, "big"))[2:]
+    pat_hsh = '0' * (8 - len(pat_hsh)) + pat_hsh
+    if pat_hsh[adr % 8] == '1':
         return True
     else:
         return False
