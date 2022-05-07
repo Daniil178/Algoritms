@@ -6,7 +6,7 @@ C = bin(0x98BADCFE)[2:]
 D = bin(0x10325476)[2:]
 
 def invert(X):
-    return X ^ 0b11111111111111111111111111111111
+    return ~X
 
 def F(X, Y, Z):
     r1 = int(X, 2) & int(Y, 2)
