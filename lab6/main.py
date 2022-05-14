@@ -133,7 +133,7 @@ def clear(A, n):
 def main():
     parser = argparse.ArgumentParser(description='Strassen Algoritm')
     parser.add_argument('-n', '--dimension', type=int, help='dimension of matrix`s for generate')
-    parser.add_argument('-v', '--voice', action='store_true', help='enter number != 0 that print all of Matrix`s')
+    parser.add_argument('-v', '--voice', action='store_true', help='print all of Matrix`s')
     args = parser.parse_args()
 
     n = args.dimension
