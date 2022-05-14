@@ -111,36 +111,29 @@ def multiStrassen(A, B, n):
     a11, a12, a21, a22 = splitMatrix(A)
     b11, b12, b21, b22 = splitMatrix(B)
 
-    #p1 = Process(target=Strassen, args=(summ(a11, a22, n), summ(b11, b22, n), n))
-    #p2 = Process(target=Strassen, args=(summ(a21, a22, n), b11, n))    
-    #p3 = Process(target=Strassen, args=(a11, sub(b12, b22, n), n))
-    #p4 = Process(target=Strassen, args=(a22, sub(b21, b11, n), n))
-    #p5 = Process(target=Strassen, args=(summ(a11, a12, n), b22, n))
-    #p6 = Process(target=Strassen, args=(sub(a21, a11, n), summ(b11, b12, n), n))
-    #p7 = Process(target=Strassen, args=(sub(a12, a22, n), summ(b21, b22, n), n))
-
-    #p1.start(), p2.start(), p3.start(), p4.start(), p5.start(), p6.start(), p7.start()
-    #p1.join(),p2.join(), p3.join(), p4.join(), p5.join(), p6.join(), p7.join()
-    #p = list()
-    #with Pool(processes=7) as pool:
-    pool = Pool(processes=7)
     tasks = ((summ(a11, a22, n), summ(b11, b22, n), n), (summ(a21, a22, n), b11, n), (a11, sub(b12, b22, n), n), (a22, sub(b21, b11, n), n), (summ(a11, a12, n), b22, n), (sub(a21, a11, n), summ(b11, b12, n), n), (sub(a12, a22, n), summ(b21, b22, n), n))
-    #    for i in pool.map(Strassen, [k for k in tasks]):
-    #        p.append(i)
-    p = pool.map(Strassen, [k for k in tasks])
+    
+    pool = Pool(processes=7)
+    p = pool.starmap(Strassen, [k for k in tasks])
     pool.close()
-    c11 = summ(summ(p[1], p[4], n), sub(p[7], p[5], n), n)
-    c12 = summ(p[3], p[5], n)
-    c21 = summ(p[2], p[4], n)
-    c22 = summ(sub(p[1], p[2], n), summ(p[3], p[6], n), n)
+    
+    c11 = summ(summ(p[1-1], p[4-1], n), sub(p[7-1], p[5-1], n), n)
+    c12 = summ(p[3-1], p[5-1], n)
+    c21 = summ(p[2-1], p[4-1], n)
+    c22 = summ(sub(p[1-1], p[2-1], n), summ(p[3-1], p[6-1], n), n)
     C = collectMatrix(c11, c12, c21, c22)
     return C
 
-        
+def clear(A, n):
+    for i in range(n):
+        A[i] = A[i][:n]
+    A = A[:n]
+    return A
 
 def main():
     parser = argparse.ArgumentParser(description='Strassen Algoritm')
     parser.add_argument('-n', '--dimension', type=int, help='dimension of matrix`s for generate')
+    parser.add_argument('-v', '--voice', action='store_true', help='enter number != 0 that print all of Matrix`s')
     args = parser.parse_args()
 
     n = args.dimension
@@ -153,17 +146,25 @@ def main():
     t0 = time() - t0
     
     t = time()
-    C = Strassen(A, A, len(A))
+    C = Strassen(A, B, len(A))
     t = time() - t
-    for i in range(n):
-        C[i] = C[i][:n]
-    C = C[:n]
-    
+    C = clear(C, n)
+    A = clear(A, n)
+    B = clear(B, n)
     t1 = time()
-    C1 = sqMultiply(A, A, n)
+    C1 = sqMultiply(A, B, n)
     t1 = time() - t1
-    with open("tests", "a") as f:
-        f.write(f"{n}, {t0}, {t}, {t1}, {C==C1}\n")
+    if args.voice:
+        for i in A:
+            print(*i)
+        print('--------------------')
+        for i in B:
+            print(*i)
+        print("result:")
+        for i in C:
+            print(*i)
+    print("Number of element`s, time of MultiStrassen, Strassen, Common, Strassen==Common?")
+    print(f"{n}, {t0}, {t}, {t1}, {C==C1}\n")
 
 if __name__ == '__main__':
     main()
