@@ -2,6 +2,7 @@ from time import time
 from random import randint
 import argparse
 from multiprocessing import Process, Pool
+import re
 
 def genMatrix(n):
     A = [[0] * n for i in range(n)]
@@ -130,15 +131,41 @@ def clear(A, n):
     A = A[:n]
     return A
 
+def get_matrix(filename='./matrix.txt'):
+    A = []
+    B = []
+    count = 0
+    with open(filename, "r") as file:
+        for line in file:
+            if line == 'matrix B\n' or line == 'matrix A\n':
+                count += 1
+                continue
+            l = re.findall(r'\d+', line)
+            if count == 1:
+                A.append([int(i) for i in l])
+            elif count == 2:
+                B.append([int(i) for i in l])
+    if count < 2 or len(B) != len(A):
+        wrong_file(filename)
+    return A, B  
+
 def main():
     parser = argparse.ArgumentParser(description='Strassen Algoritm')
-    parser.add_argument('-n', '--dimension', type=int, help='dimension of matrix`s for generate')
+    parser.add_argument('-n', '--dimension', action='store_true', help='dimension of matrix`s for generate', required=False)
     parser.add_argument('-v', '--voice', action='store_true', help='print all of Matrix`s')
+    parser.add_argument('-f', '--file', action='store_true', help='Matrix`s from file')
     args = parser.parse_args()
 
-    n = args.dimension
-    A = genMatrix(n)
-    B = genMatrix(n)
+    if args.dimension:
+        n = args.dimension
+        A = genMatrix(n)
+        B = genMatrix(n)
+    elif args.file:
+        A, B = get_matrix()
+        n = len(A)
+    else:
+        print("Error, choice something")
+        return
     addZero(A)
     addZero(B)	
     t0 = time()
@@ -155,9 +182,10 @@ def main():
     C1 = sqMultiply(A, B, n)
     t1 = time() - t1
     if args.voice:
+        print('matrix A')
         for i in A:
             print(*i)
-        print('--------------------')
+        print('matrix B')
         for i in B:
             print(*i)
         print("result:")
