@@ -121,11 +121,14 @@ def multiStrassen(A, B, n):
 
     #p1.start(), p2.start(), p3.start(), p4.start(), p5.start(), p6.start(), p7.start()
     #p1.join(),p2.join(), p3.join(), p4.join(), p5.join(), p6.join(), p7.join()
-    p = list()
-    with Pool(processes=7) as pool:
-        tasks = [(summ(a11, a22, n), summ(b11, b22, n), n), (summ(a21, a22, n), b11, n), (a11, sub(b12, b22, n), n), (a22, sub(b21, b11, n), n), (summ(a11, a12, n), b22, n), (sub(a21, a11, n), summ(b11, b12, n), n), (sub(a12, a22, n), summ(b21, b22, n), n)]
-        for i in pool.map(Strassen, [k for k in tasks]):
-            p.append(i)
+    #p = list()
+    #with Pool(processes=7) as pool:
+    pool = Pool(processes=7)
+    tasks = ((summ(a11, a22, n), summ(b11, b22, n), n), (summ(a21, a22, n), b11, n), (a11, sub(b12, b22, n), n), (a22, sub(b21, b11, n), n), (summ(a11, a12, n), b22, n), (sub(a21, a11, n), summ(b11, b12, n), n), (sub(a12, a22, n), summ(b21, b22, n), n))
+    #    for i in pool.map(Strassen, [k for k in tasks]):
+    #        p.append(i)
+    p = pool.map(Strassen, [k for k in tasks])
+    pool.close()
     c11 = summ(summ(p[1], p[4], n), sub(p[7], p[5], n), n)
     c12 = summ(p[3], p[5], n)
     c21 = summ(p[2], p[4], n)
