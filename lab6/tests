@@ -1,0 +1,2 @@
+n, time multi, time strassen, time common, strassen == common
+10, 0.003122091293334961, 0.003482818603515625, 0.0011870861053466797, True
