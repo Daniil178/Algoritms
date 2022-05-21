@@ -43,18 +43,22 @@ def create_patt_hashes(filename, dict_hashes):
 
 def parse_args(text_file, file_name):
     parser = argparse.ArgumentParser()
-    parser.add_argument('-t', '--text', type=str,
-                        help='text file')
-    parser.add_argument('-p', '--pat', type=str,
-                        help='pattern file')
-    args = vars(parser.parse_args())
+    parser.add_argument('-t', '--text', type=str, help='text file')
+    parser.add_argument('-p', '--pat', type=str, help='pattern file')
+    parser.add_argument('-k', '--kmp', action='store_true', help='set kmp algoritm', required=False)
+    args = parser.parse_args()
+    types = 'b'
 
-    if(args['text']):
-        text_file[0] = args['text']
+    if args.text:
+        text_file[0] = args.text
 
-    if(args['pat']):
-        file_name[0] = args['pat']
-    return args['text'], args['pat']
+    if args.pat:
+        file_name[0] = args.pat
+    
+    if args.kmp:
+        types = 'k'
+
+    return text_file[0], file_name[0], types
 
 
 
@@ -63,28 +67,36 @@ def main():
     text_file = "./text.txt"
     dict_hashes = {}
     #dict hash: {adress: (str, hash)}
-    text_file, file_name = parse_args([text_file], [file_name])
+    text_file, file_name, types = parse_args([text_file], [file_name])
     patt_len = create_patt_hashes(file_name, dict_hashes)
     blum_file = create_blum(dict_hashes)
     
     with open(text_file, "r") as file:
         text = file.read()
 
-    with open(blum_file, "rb") as file:
-        prc = []
-        processing(0, len(text), patt_len, text, file, dict_hashes)
+    if types == 'b':
+        with open(blum_file, "rb") as file:
+            prc = []
+            processing(0, len(text), patt_len, text, file, dict_hashes)
 
-        for j in range(0, PROCESS):
-            prc.append(0)
-            prc[j] = Process(target=processing, args=(j, len(text),
-                           patt_len, text, file, dict_hashes))
+            for j in range(0, PROCESS):
+                prc.append(0)
+                prc[j] = Process(target=processing, args=(j, len(text),
+                            patt_len, text, file, dict_hashes))
 
-        for j in range(0, PROCESS):
-            prc[j].start()
+            for j in range(0, PROCESS):
+                prc[j].start()
 
-        for j in range(0, PROCESS):
-            prc[j].join()
-    
+            for j in range(0, PROCESS):
+                prc[j].join()
+    else:
+        with open(file_name, 'r') as f:
+            patts = f.read()
+        patts = patts.split()
+        for patt in patts:
+            offsets = cnt.kmp(patt, text)
+            for offset in offsets:
+                print(patt, offset)
 
 if __name__ == '__main__':
     main()
