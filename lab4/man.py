@@ -5,10 +5,12 @@ import argparse
 PROCESS = 4
 
 def processing(first, len_txt, patt_len, text, blum_file, dict_hashes):
+    offsets = []
     strs_adr_hsh_offset = cnt.find(first, text, len_txt, patt_len, blum_file)
     for candidate in strs_adr_hsh_offset:
         for pat in dict_hashes[candidate[1]]:
-            if pat[1] == candidate[2] and pat[0] == candidate[0]:
+            if pat[1] == candidate[2] and pat[0] == candidate[0] and not(candidate[3] in offsets):
+                offsets.append(candidate[3])
                 print(pat[0], candidate[3])
     return
 
