@@ -1,5 +1,5 @@
 import count as cnt
-from multiprocessing import Process
+from multiprocessing import Process, Pool
 import argparse
 
 PROCESS = 4
@@ -9,10 +9,10 @@ def processing(first, len_txt, patt_len, text, blum_file, dict_hashes):
     strs_adr_hsh_offset = cnt.find(first, text, len_txt, patt_len, blum_file)
     for candidate in strs_adr_hsh_offset:
         for pat in dict_hashes[candidate[1]]:
-            if pat[1] == candidate[2] and pat[0] == candidate[0] and not(candidate[3] in offsets):
-                offsets.append(candidate[3])
+            if pat[1] == candidate[2] and pat[0] == candidate[0] and not((pat[0], candidate[3]) in offsets):
+                offsets.append((pat[0], candidate[3]))
                 print(pat[0], candidate[3])
-    return
+    return offsets
 
 def create_blum(dict_hashes):
     filename = "blum.bin"
@@ -78,19 +78,25 @@ def main():
 
     if types == 'b':
         with open(blum_file, "rb") as file:
-            prc = []
+            #prc = []
             processing(0, len(text), patt_len, text, file, dict_hashes)
 
-            for j in range(0, PROCESS):
-                prc.append(0)
-                prc[j] = Process(target=processing, args=(j, len(text),
-                            patt_len, text, file, dict_hashes))
+            # for j in range(0, PROCESS):
+            #     prc.append(0)
+            #     prc[j] = Process(target=processing, args=(j, len(text),
+            #                 patt_len, text, file, dict_hashes))
 
-            for j in range(0, PROCESS):
-                prc[j].start()
+            # for j in range(0, PROCESS):
+            #     prc[j].start()
 
-            for j in range(0, PROCESS):
-                prc[j].join()
+            # for j in range(0, PROCESS):
+            #     prc[j].join()
+            pool = Pool(processes=PROCESS)
+            prc = pool.starmap(processing, [(j, len(text), patt_len, text, file, dict_hashes) for j in range(PROCESS)])
+            pool.close()
+        for i in range(4):
+            print(prc[i])
+            
     else:
         with open(file_name, 'r') as f:
             patts = f.read()
