@@ -3,16 +3,17 @@ from multiprocessing import Process, Pool
 import argparse
 
 PROCESS = 4
+offsets = []
 
 def processing(first, len_txt, patt_len, text, blum_file, dict_hashes):
-    offsets = []
+    
     strs_adr_hsh_offset = cnt.find(first, text, len_txt, patt_len, blum_file)
     for candidate in strs_adr_hsh_offset:
         for pat in dict_hashes[candidate[1]]:
             if pat[1] == candidate[2] and pat[0] == candidate[0] and not((pat[0], candidate[3]) in offsets):
                 offsets.append((pat[0], candidate[3]))
                 print(pat[0], candidate[3])
-    return offsets
+    return
 
 def create_blum(dict_hashes):
     filename = "blum.bin"
@@ -48,9 +49,9 @@ def parse_args(text_file, file_name):
     parser.add_argument('-t', '--text', type=str, help='text file')
     parser.add_argument('-p', '--pat', type=str, help='pattern file')
     parser.add_argument('-k', '--kmp', action='store_true', help='set kmp algoritm', required=False)
+    parser.add_argument('-b', '--blum', action='store_true', help='set rk with blum algoritm', required=False)
     args = parser.parse_args()
     types = 'b'
-
     if args.text:
         text_file[0] = args.text
 
@@ -59,6 +60,8 @@ def parse_args(text_file, file_name):
     
     if args.kmp:
         types = 'k'
+    elif args.blum:
+        types = 'b'
 
     return text_file[0], file_name[0], types
 
@@ -78,26 +81,21 @@ def main():
 
     if types == 'b':
         with open(blum_file, "rb") as file:
-            #prc = []
+            prc = []
             processing(0, len(text), patt_len, text, file, dict_hashes)
 
-            # for j in range(0, PROCESS):
-            #     prc.append(0)
-            #     prc[j] = Process(target=processing, args=(j, len(text),
-            #                 patt_len, text, file, dict_hashes))
+            for j in range(0, PROCESS):
+                prc.append(0)
+                prc[j] = Process(target=processing, args=(j, len(text),
+                             patt_len, text, file, dict_hashes))
 
-            # for j in range(0, PROCESS):
-            #     prc[j].start()
+            for j in range(0, PROCESS):
+                prc[j].start()
 
-            # for j in range(0, PROCESS):
-            #     prc[j].join()
-            pool = Pool(processes=PROCESS)
-            prc = pool.starmap(processing, [(j, len(text), patt_len, text, file, dict_hashes) for j in range(PROCESS)])
-            pool.close()
-        for i in range(4):
-            print(prc[i])
+            for j in range(0, PROCESS):
+                prc[j].join()
             
-    else:
+    elif types == 'k':
         with open(file_name, 'r') as f:
             patts = f.read()
         patts = patts.split()
